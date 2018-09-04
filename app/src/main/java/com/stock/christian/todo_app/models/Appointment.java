@@ -1,19 +1,26 @@
 package com.stock.christian.todo_app.models;
 
-import java.util.Date;
-
 /**
- * Model Class for plain Appointments
+ * Model Class for plain Appointments with title and icon as id
  *
+ * @author chrstock
  * @version 0.1
  */
 public class Appointment {
     private String title;
-    private Date date;
+    private int image;
 
-    public Appointment(String title, Date date) {
+    public Appointment(String title, int image) {
         this.title = title;
-        this.date = date;
+        this.image = image;
+    }
+
+    public int getImage() {
+        return image;
+    }
+
+    public void setImage(int image) {
+        this.image = image;
     }
 
     public String getTitle() {
@@ -22,13 +29,5 @@ public class Appointment {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
     }
 }
