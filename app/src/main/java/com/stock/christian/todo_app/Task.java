@@ -1,16 +1,18 @@
-package com.stock.christian.todo_app.models;
+package com.stock.christian.todo_app;
 
 /**
- * Model Class for plain Appointments with title and icon as id
+ * Model Class for plain Tasks with title and icon as id
  *
  * @author chrstock
  * @version 0.1
  */
-public class Appointment {
+public class Task {
+    // stores title of task
     private String title;
+    // sotred icon of task
     private int image;
 
-    public Appointment(String title, int image) {
+    public Task(String title, int image) {
         this.title = title;
         this.image = image;
     }

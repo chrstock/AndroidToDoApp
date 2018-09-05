@@ -1,4 +1,4 @@
-package com.stock.christian.todo_app.adapters;
+package com.stock.christian.todo_app;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -11,31 +11,28 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.stock.christian.todo_app.R;
-import com.stock.christian.todo_app.models.Appointment;
-
 import java.util.ArrayList;
 
 /**
- * Custom Arrayadapter class for Appointment-model
+ * Custom Arrayadapter class for Task-model
  *
  * @author chrstock
  * @version 0.1
  */
-public class AppointmentAdapter extends ArrayAdapter<Appointment> {
+public class TaskAdapter extends ArrayAdapter<Task> {
 
-    private ArrayList<Appointment> appointments;
+    private ArrayList<Task> tasks;
 
-    public AppointmentAdapter(Context context, ArrayList<Appointment> appointments) {
-        super(context, 0, appointments);
-        this.appointments = appointments;
+    public TaskAdapter(Context context, ArrayList<Task> tasks) {
+        super(context, 0, tasks);
+        this.tasks = tasks;
     }
 
     @NonNull
     @Override
     public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
-        Appointment appointment = getItem(position);
+        Task task = getItem(position);
 
         //setting to default values
         //ToDo Changing to real placeholders
@@ -43,13 +40,13 @@ public class AppointmentAdapter extends ArrayAdapter<Appointment> {
         int image = R.drawable.ic_sausage;
 
         //using getter if object is instantiated
-        if (appointment != null) {
-            title = appointment.getTitle();
-            image = appointment.getImage();
+        if (task != null) {
+            title = task.getTitle();
+            image = task.getImage();
         }
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_appointment, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_task, parent, false);
         }
 
         TextView mTextViewTitle = convertView.findViewById(R.id.text_title);
@@ -64,7 +61,7 @@ public class AppointmentAdapter extends ArrayAdapter<Appointment> {
         buttonRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                appointments.remove(position);
+                tasks.remove(position);
                 notifyDataSetChanged();
             }
         });
