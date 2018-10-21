@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">ToDo-App</string>
+
+    <string name="hello">Hallo</string>
+    <string name="action_settings">Einstellungen</string>
+
+    <string name="editText_hint_title">Titel</string>
+    <string name="editText_hint_image">Bild</string>
+    <string name="button_add_task">+</string>
+
+    <string name="editText_errorMessage">Das Feld darf nicht leer sein.</string>
+
 </resources>

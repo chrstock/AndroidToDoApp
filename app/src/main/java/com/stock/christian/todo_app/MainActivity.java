@@ -2,10 +2,19 @@ package com.stock.christian.todo_app;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * MainActivity to create User Tasks
@@ -15,53 +24,110 @@ import java.util.ArrayList;
  */
 public class MainActivity extends AppCompatActivity {
 
-    private static ArrayList<Task> taskList;
+    public static final String LOG_TAG = MainActivity.class.getSimpleName();
 
-    private TaskAdapter taskAdapter;
+    private TaskDataSource dataSource;
+
+    private void showAllListEntries() {
+        List<Task> taskList = dataSource.getAllTasks();
+
+
+//        ArrayAdapter<Task> taskArrayAdapter = new ArrayAdapter<>(
+//                this,
+//                android.R.layout.simple_list_item_multiple_choice,
+//                taskList);
+
+        ArrayAdapter<Task> taskArrayAdapter = new TaskAdapter(this, taskList);
+
+        ListView taskListView = findViewById(R.id.list_view_tasks);
+        taskListView.setAdapter(taskArrayAdapter);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        taskList = new ArrayList<>();
+        Log.d(LOG_TAG, "Die Datenquelle wird angelegt.");
+        dataSource = new TaskDataSource(this);
 
-        if (taskList.isEmpty()) {
-            populateTaskList();
-        }
-
-        taskAdapter = new TaskAdapter(this, taskList);
-
-        //setting GUI elements
-        ListView mListViewTask = findViewById(R.id.list_view_tasks);
-        mListViewTask.setAdapter(taskAdapter);
+        activateAddButton();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        taskAdapter = null;
-        taskList = null;
+    protected void onResume() {
+        super.onResume();
+
+        super.onResume();
+
+        Log.d(LOG_TAG, "Die Datenquelle wird geöffnet.");
+        dataSource.open();
+
+        Log.d(LOG_TAG, "Folgende Einträge sind in der Datenbank vorhanden:");
+        showAllListEntries();
     }
 
-    /**
-     * Fills List with Stub entries
-     */
-    private static void populateTaskList() {
-        taskList.add(new Task("Housework Done.", R.drawable.ic_strawberry));
-        taskList.add(new Task("Doctor called.", R.drawable.ic_tomato));
-        taskList.add(new Task("Homework Done.", R.drawable.ic_turnip));
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        Log.d(LOG_TAG, "Die Datenquelle wird geschlossen.");
+        dataSource.close();
     }
 
-    /**
-     * Adding one element to the list
-     * ToDo: User shall add Entries
-     *
-     * @param view not used
-     */
-    public void addTask(View view) {
-        Task newTask = new Task("Stub Task", R.drawable.ic_tomato);
-        taskAdapter.add(newTask);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void activateAddButton(){
+        Button buttonAddTask = findViewById(R.id.button_add_task);
+        final EditText editTextTitle = findViewById(R.id.editText_title);
+        //Image simulated
+
+        buttonAddTask.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                int image = 2131165292;
+                String title = editTextTitle.getText().toString();
+
+                if(TextUtils.isEmpty(title)){
+                    editTextTitle.setError(getString(R.string.editText_hint_title));
+                    return;
+                }
+
+                editTextTitle.setText("");
+
+                dataSource.createTask(title,image);
+
+                InputMethodManager inputMethodManager;
+                inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                if(getCurrentFocus() != null){
+                    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
+                }
+                showAllListEntries();
+            }
+                                         }
+        );
+
     }
 
 

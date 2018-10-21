@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Custom Arrayadapter class for Task-model
@@ -21,9 +22,9 @@ import java.util.ArrayList;
  */
 public class TaskAdapter extends ArrayAdapter<Task> {
 
-    private ArrayList<Task> tasks;
+    private List<Task> tasks;
 
-    public TaskAdapter(Context context, ArrayList<Task> tasks) {
+    public TaskAdapter(Context context, List<Task> tasks) {
         super(context, 0, tasks);
         this.tasks = tasks;
     }
