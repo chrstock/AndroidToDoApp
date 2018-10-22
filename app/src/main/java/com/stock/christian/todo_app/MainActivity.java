@@ -4,10 +4,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.SparseBooleanArray;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,12 +35,12 @@ public class MainActivity extends AppCompatActivity {
         List<Task> taskList = dataSource.getAllTasks();
 
 
-//        ArrayAdapter<Task> taskArrayAdapter = new ArrayAdapter<>(
-//                this,
-//                android.R.layout.simple_list_item_multiple_choice,
-//                taskList);
+        ArrayAdapter<Task> taskArrayAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_gallery_item,
+                taskList);
 
-        ArrayAdapter<Task> taskArrayAdapter = new TaskAdapter(this, taskList);
+//        ArrayAdapter<Task> taskArrayAdapter = new TaskAdapter(this, taskList);
 
         ListView taskListView = findViewById(R.id.list_view_tasks);
         taskListView.setAdapter(taskArrayAdapter);
@@ -52,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
         dataSource = new TaskDataSource(this);
 
         activateAddButton();
+        initializeContectualActionBar();
+
     }
 
     @Override
@@ -130,5 +135,54 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void initializeContectualActionBar(){
+        final ListView taskListView = findViewById(R.id.list_view_tasks);
+        taskListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+
+        taskListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+            @Override
+            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+
+            }
+
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                getMenuInflater().inflate(R.menu.menu_contextual_action_bar, menu);
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.cab_delete:
+                        SparseBooleanArray touchedTaskPositions = taskListView.getCheckedItemPositions();
+                        for (int i = 0; i<touchedTaskPositions.size();i++){
+                            boolean isChecked = touchedTaskPositions.valueAt(i);
+                            if(isChecked){
+                                int positionListView = touchedTaskPositions.keyAt(i);
+                                Task task = (Task) taskListView.getItemAtPosition(positionListView);
+                                Log.d(LOG_TAG, "Position im ListView: "+ positionListView + "Inhalt: " + task.toString());
+                                dataSource.deleteTask(task);
+                            }
+                        }
+                        showAllListEntries();
+                        mode.finish();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+
+            }
+        });
+    }
 
 }

@@ -54,6 +54,15 @@ public class TaskDataSource {
         return task;
     }
 
+    public void deleteTask(Task task) {
+        long id = task.getId();
+
+        database.delete(TaskDbHelper.TASK_LIST,
+                TaskDbHelper.COLUMN_ID + "=" + id, null);
+
+        Log.d(LOG_TAG, "Eintrag gelöscht! ID: " + id + "Inhalt: " + task.toString());
+    }
+
     public Task cursorToTask(Cursor cursor) {
         int idIndex = cursor.getColumnIndex(TaskDbHelper.COLUMN_ID);
         int idTitle = cursor.getColumnIndex(TaskDbHelper.COLUMN_TITLE);
