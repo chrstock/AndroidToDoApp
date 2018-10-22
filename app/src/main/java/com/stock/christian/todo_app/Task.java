@@ -1,54 +1,27 @@
 package com.stock.christian.todo_app;
 
+import com.orm.SugarRecord;
+
 /**
- * Model Class for plain Tasks with title and icon as id
+ * Entity for SugarORM
  *
  * @author chrstock
  * @version 0.1
  */
-public class Task {
-    private long id;
+public class Task extends SugarRecord<Task> {
+
     // stores title of task
-    private String title;
+    String title;
     // sotred icon of task
-    private int image;
+    int image;
 
-    public Task(String title, int image, long id) {
+    public Task(){
+
+    }
+
+    public Task(String title, int image) {
         this.title = title;
         this.image = image;
-        this.id = id;
     }
 
-    public int getImage() {
-        return image;
-    }
-
-    public void setImage(int image) {
-        this.image = image;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    @Override
-    public String toString() {
-        return "Task{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", image=" + image +
-                '}';
-    }
 }

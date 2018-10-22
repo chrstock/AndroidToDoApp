@@ -41,10 +41,10 @@ public class TaskAdapter extends ArrayAdapter<Task> {
         int image = R.drawable.ic_sausage;
 
         //using getter if object is instantiated
-        if (task != null) {
-            title = task.getTitle();
-            image = task.getImage();
-        }
+//        if (task != null) {
+//            title = task.getTitle();
+//            image = task.getImage();
+//        }
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_task, parent, false);

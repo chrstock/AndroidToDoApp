@@ -29,11 +29,9 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
 
-    private TaskDataSource dataSource;
 
     private void showAllListEntries() {
-        List<Task> taskList = dataSource.getAllTasks();
-
+        List<Task> taskList = Task.listAll(Task.class);
 
         ArrayAdapter<Task> taskArrayAdapter = new ArrayAdapter<>(
                 this,
@@ -51,9 +49,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.d(LOG_TAG, "Die Datenquelle wird angelegt.");
-        dataSource = new TaskDataSource(this);
-
         activateAddButton();
         initializeContectualActionBar();
 
@@ -63,21 +58,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        super.onResume();
-
-        Log.d(LOG_TAG, "Die Datenquelle wird geöffnet.");
-        dataSource.open();
-
-        Log.d(LOG_TAG, "Folgende Einträge sind in der Datenbank vorhanden:");
         showAllListEntries();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        Log.d(LOG_TAG, "Die Datenquelle wird geschlossen.");
-        dataSource.close();
     }
 
     @Override
@@ -103,39 +84,40 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void activateAddButton(){
+    private void activateAddButton() {
         Button buttonAddTask = findViewById(R.id.button_add_task);
         final EditText editTextTitle = findViewById(R.id.editText_title);
         //Image simulated
 
-        buttonAddTask.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                int image = 2131165292;
-                String title = editTextTitle.getText().toString();
+        buttonAddTask.setOnClickListener(new View.OnClickListener() {
+                                             @Override
+                                             public void onClick(View v) {
+                                                 int image = 2131165292;
+                                                 String title = editTextTitle.getText().toString();
 
-                if(TextUtils.isEmpty(title)){
-                    editTextTitle.setError(getString(R.string.editText_hint_title));
-                    return;
-                }
+                                                 if (TextUtils.isEmpty(title)) {
+                                                     editTextTitle.setError(getString(R.string.editText_hint_title));
+                                                     return;
+                                                 }
 
-                editTextTitle.setText("");
+                                                 editTextTitle.setText("");
 
-                dataSource.createTask(title,image);
+                                                 Task task = new Task(title, image);
+                                                 task.save();
 
-                InputMethodManager inputMethodManager;
-                inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                if(getCurrentFocus() != null){
-                    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
-                }
-                showAllListEntries();
-            }
+                                                 InputMethodManager inputMethodManager;
+                                                 inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                                                 if (getCurrentFocus() != null) {
+                                                     inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                                                 }
+                                                 showAllListEntries();
+                                             }
                                          }
         );
 
     }
 
-    private void initializeContectualActionBar(){
+    private void initializeContectualActionBar() {
         final ListView taskListView = findViewById(R.id.list_view_tasks);
         taskListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 
@@ -158,16 +140,16 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.cab_delete:
                         SparseBooleanArray touchedTaskPositions = taskListView.getCheckedItemPositions();
-                        for (int i = 0; i<touchedTaskPositions.size();i++){
+                        for (int i = 0; i < touchedTaskPositions.size(); i++) {
                             boolean isChecked = touchedTaskPositions.valueAt(i);
-                            if(isChecked){
+                            if (isChecked) {
                                 int positionListView = touchedTaskPositions.keyAt(i);
                                 Task task = (Task) taskListView.getItemAtPosition(positionListView);
-                                Log.d(LOG_TAG, "Position im ListView: "+ positionListView + "Inhalt: " + task.toString());
-                                dataSource.deleteTask(task);
+                                Log.d(LOG_TAG, "Position im ListView: " + positionListView + "Inhalt: " + task.toString());
+                                task.delete();
                             }
                         }
                         showAllListEntries();
