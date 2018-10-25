@@ -15,7 +15,7 @@ public class Task extends SugarRecord<Task> {
     // sotred icon of task
     int image;
 
-    public Task(){
+    public Task() {
 
     }
 
@@ -24,4 +24,8 @@ public class Task extends SugarRecord<Task> {
         this.image = image;
     }
 
+    @Override
+    public String toString() {
+        return this.id + ", " + this.title + ", " + this.image;
+    }
 }

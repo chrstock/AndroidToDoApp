@@ -22,10 +22,12 @@ import java.util.List;
  */
 public class TaskAdapter extends ArrayAdapter<Task> {
 
+    private final Context context;
     private List<Task> tasks;
 
     public TaskAdapter(Context context, List<Task> tasks) {
-        super(context, 0, tasks);
+        super(context,0);
+        this.context = context;
         this.tasks = tasks;
     }
 
@@ -40,11 +42,11 @@ public class TaskAdapter extends ArrayAdapter<Task> {
         String title = "";
         int image = R.drawable.ic_sausage;
 
-        //using getter if object is instantiated
-//        if (task != null) {
-//            title = task.getTitle();
-//            image = task.getImage();
-//        }
+//        using getter if object is instantiated
+        if (task != null) {
+            title = task.title;
+            image = task.image;
+        }
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_task, parent, false);
@@ -55,17 +57,6 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 
         mTextViewTitle.setText(title);
         mImageViewSymbol.setImageResource(image);
-
-        FloatingActionButton buttonRemove = convertView.findViewById(R.id.button_delete);
-
-        //implementing removing button to delete its own element
-        buttonRemove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                tasks.remove(position);
-                notifyDataSetChanged();
-            }
-        });
 
         return convertView;
     }
